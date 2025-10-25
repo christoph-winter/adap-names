@@ -17,6 +17,7 @@ describe("Basic function tests", () => {
   it("test remove", () => {
     let n: Name = new Name(["oss", "fau", "de"]);
     n.remove(1);
+    expect(n.getNoComponents()).toBe(2);
     expect(n.asString()).toBe("oss.de");
   });
   it("test setComponent", () =>{
@@ -62,5 +63,4 @@ describe("test basic method invalid input", () => {
     expect(()=>n.setComponent(10000, "foo")).toThrowError("Index out of bounds");
     expect(()=>n.remove(-42)).toThrowError("Index out of bounds");
 })
-  it("test ")
 })

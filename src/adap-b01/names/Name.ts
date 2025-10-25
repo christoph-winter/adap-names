@@ -68,13 +68,13 @@ export class Name {
         return this.components.length
     }
 
-    /** @methodtype set-method */
+    /** @methodtype command-method */
     public insert(i: number, c: string): void {
         this.assertIsIndexInRange(i);
         this.components.splice(i, 0, c)
     }
 
-    /** @methodtype set-method */
+    /** @methodtype command-method */
     public append(c: string): void {
         this.components.push(c);
     }
@@ -84,6 +84,7 @@ export class Name {
         this.components.splice(i, 1)
     }
     
+    /** war nicht Teil der Angabe*/
     /** @methodtype assert-method */
     protected assertIsIndexInRange(i: number): void{
         if(i < 0 || i >= this.components.length){
