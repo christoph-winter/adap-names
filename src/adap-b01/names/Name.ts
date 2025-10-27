@@ -46,7 +46,9 @@ export class Name {
     public asDataString(): string {
         return this.components.map(
             (x: string) =>
-                x.replaceAll(this.delimiter, ESCAPE_CHARACTER + this.delimiter))
+                x.replaceAll(ESCAPE_CHARACTER, ESCAPE_CHARACTER + ESCAPE_CHARACTER)
+                    .replaceAll(this.delimiter, ESCAPE_CHARACTER + this.delimiter)
+            )
             .join(this.delimiter);
     }
     /**  @methodtype get-method */

@@ -45,14 +45,14 @@ describe("Escape character extravaganza", () => {
   });
 });
 
-describe("test delimiter in dataString", () => {
+describe("test specialCharacter in getDataString", () => {
   it("test delimiter escaping", () => {
     // Original name string = "oss.cs.fau.de"
-    let n: Name = new Name(["oss.cs.fau.de"], '.');
-    expect(n.asDataString()).toBe("oss\\.cs\\.fau\\.de");
+    let n: Name = new Name(["oss.cs.fau\\.de"], '.');
+    expect(n.asDataString()).toBe("oss\\.cs\\.fau\\\\\\.de");
     expect(n.asString("oss.cs.fau.de"));
     n.append("people");
-    expect(n.asDataString()).toBe("oss\\.cs\\.fau\\.de.people");
+    expect(n.asDataString()).toBe("oss\\.cs\\.fau\\\\\\.de.people");
   });
 });
 
