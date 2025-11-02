@@ -20,7 +20,7 @@ export class Name {
 
     /** Expects that all Name components are properly masked */
     constructor(other: string[], delimiter?: string) {
-        if(delimiter != undefined || delimiter != null)
+        if(delimiter != undefined && delimiter != null)
         {
             this.delimiter = delimiter;
         }
@@ -67,7 +67,7 @@ export class Name {
      /** Returns number of components in Name instance */
     /** @methodtype get-method */
      public getNoComponents(): number {
-        return this.components.length
+        return this.components.length;
     }
 
     /** @methodtype command-method */

@@ -7,51 +7,71 @@ export class StringArrayName implements Name {
     protected components: string[] = [];
 
     constructor(source: string[], delimiter?: string) {
-        throw new Error("needs implementation or deletion");
+        if(delimiter != undefined)
+        {
+            this.delimiter = delimiter;
+        }
+        this.components = source;
     }
 
     public asString(delimiter: string = this.delimiter): string {
-        throw new Error("needs implementation or deletion");
+        return this.components.join(delimiter);
     }
 
     public asDataString(): string {
-        throw new Error("needs implementation or deletion");
+        return this.components.map(
+            (x: string) =>
+                x.replaceAll(ESCAPE_CHARACTER, ESCAPE_CHARACTER + ESCAPE_CHARACTER)
+                    .replaceAll(this.delimiter, ESCAPE_CHARACTER + this.delimiter)
+            )
+            .join(this.delimiter);
     }
 
     public getDelimiterCharacter(): string {
-        throw new Error("needs implementation or deletion");
+        return this.delimiter;
     }
 
     public isEmpty(): boolean {
-        throw new Error("needs implementation or deletion");
+        return this.components.length == 0;
     }
 
     public getNoComponents(): number {
-        throw new Error("needs implementation or deletion");
+        return this.components.length;
     }
 
     public getComponent(i: number): string {
-        throw new Error("needs implementation or deletion");
-    }
+        this.assertIsIndexInRange(i);        
+        return this.components[i];    }
 
     public setComponent(i: number, c: string): void {
-        throw new Error("needs implementation or deletion");
+        this.assertIsIndexInRange(i);
+        this.components[i] = c;    
     }
 
     public insert(i: number, c: string): void {
-        throw new Error("needs implementation or deletion");
+        this.assertIsIndexInRange(i);
+        this.components.splice(i, 0, c)
     }
 
     public append(c: string): void {
-        throw new Error("needs implementation or deletion");
+        this.components.push(c);    
     }
 
     public remove(i: number): void {
-        throw new Error("needs implementation or deletion");
+        this.assertIsIndexInRange(i)
+        this.components.splice(i, 1)
     }
 
     public concat(other: Name): void {
-        throw new Error("needs implementation or deletion");
+        var newName = this.components;
+        for(let i = 0; i < other.getNoComponents(); i++)
+        {
+            this.append(other.getComponent(i));
+        }
     }
-
+    protected assertIsIndexInRange(i: number): void{
+        if(i < 0 || i >= this.components.length){
+            throw new RangeError("Index out of bounds");
+        }
+    }
 }
