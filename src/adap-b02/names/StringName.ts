@@ -8,21 +8,28 @@ export class StringName implements Name {
     protected name: string = "";
     protected noComponents: number = 0;
 
+    //expects a properly masked string i.e. singular name components intentionally containing control characters should be escaped 
     constructor(source: string, delimiter?: string) {
-        if(delimiter != undefined)
+        if(delimiter != undefined && delimiter.length == 1)
         {
             this.delimiter = delimiter;
         }
-        this.noComponents = source.split(this.delimiter).length;
+
+        this.noComponents = this.splitStringIntoComponents(source).length;
         this.name = source;
     }
     
     public asString(delimiter: string = this.delimiter): string {
-        return this.name.replaceAll(this.delimiter, delimiter);
+        if(delimiter.length != 1) throw new TypeError("delimiter length is invalid");
+        return this.splitStringIntoComponents(this.name).map(
+                    (x: string) =>
+                        x.replaceAll(ESCAPE_CHARACTER, "")
+                    )
+                    .join(delimiter);
     }
 
     public asDataString(): string {
-        return this.name.replaceAll(ESCAPE_CHARACTER, ESCAPE_CHARACTER + ESCAPE_CHARACTER).replaceAll(this.delimiter, ESCAPE_CHARACTER + this.delimiter);
+        return this.name;
     }
 
     public getDelimiterCharacter(): string {
@@ -38,7 +45,7 @@ export class StringName implements Name {
     }
 
     public getComponent(x: number): string {
-        var component = this.name.split(this.delimiter).at(x);
+        var component = this.splitStringIntoComponents(this.name).at(x);
         if(component == undefined)
         {
             throw new RangeError("no valid element found at position: "+x);
@@ -47,13 +54,13 @@ export class StringName implements Name {
     }
 
     public setComponent(n: number, c: string): void {
-        var arrayName = this.name.split(this.delimiter);
+        var arrayName = this.splitStringIntoComponents(this.name);
         arrayName[n] = c;
         this.name = arrayName.join(this.delimiter);
     }
 
     public insert(n: number, c: string): void {
-        var arrayName = this.name.split(this.delimiter);
+        var arrayName = this.splitStringIntoComponents(this.name);
         arrayName.splice(n, 0, c)
         this.name = arrayName.join(this.delimiter);
     }
@@ -63,7 +70,7 @@ export class StringName implements Name {
     }
 
     public remove(n: number): void {
-        var arrayName = this.name.split(this.delimiter);
+        var arrayName = this.splitStringIntoComponents(this.name);
         arrayName.splice(n, 1);
         this.name = arrayName.join(this.delimiter);
     }
@@ -73,5 +80,15 @@ export class StringName implements Name {
         {
             this.append(other.getComponent(i));
         }
+    }
+
+    private splitStringIntoComponents(str: string): string[]
+    {
+        // Escape any regex meta-characters in delimiter
+        const escapedDelim = this.delimiter.replace(/[\\^$.*+?()[\]{}|]/g, '\\$&');
+        
+        // Escape control characters. 
+        const regex = new RegExp(`(?<!\\\\)[${escapedDelim}]`);
+        return str.split(regex);
     }
 }
