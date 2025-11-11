@@ -56,4 +56,14 @@ describe("Escape character extravaganza", () => {
     n.append("people");
     expect(n.asString()).toBe("oss.cs.fau.de#people");
   });
+
+    it("test escaped delimiter in string", () => {
+    let n: Name = new StringName("oss\\#cs#fau#de", "#");
+    expect(n.getNoComponents()).toBe(3);
+    expect(n.asDataString()).toBe("oss\\#cs#fau#de")
+    expect(n.asString('.')).toBe("oss#cs.fau.de");
+    n.append("people");
+    expect(n.asDataString()).toBe("oss\\#cs#fau#de#people");
+    expect(n.asString(".")).toBe("oss#cs.fau.de.people");
+  });
 });
