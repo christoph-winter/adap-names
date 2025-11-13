@@ -46,10 +46,10 @@ export class StringName implements Name {
     public getComponent(x: number): string {
         var component = this.splitStringIntoComponents(this.name).at(x);
         if(component == undefined)
-        {
-            throw new RangeError("no valid element found at position: "+x);
-        }
-        else return component;
+            {
+                throw new RangeError("no valid element found at position: "+x);
+            }
+        else return component.replaceAll(ESCAPE_CHARACTER, "");
     }
 
     public setComponent(n: number, c: string): void {
