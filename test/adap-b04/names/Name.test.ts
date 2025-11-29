@@ -1,8 +1,10 @@
-import { describe, it, expect } from "vitest";
-
-import { Name } from "../../../src/adap-b03/names/Name";
-import { StringName } from "../../../src/adap-b03/names/StringName";
-import { StringArrayName } from "../../../src/adap-b03/names/StringArrayName";
+  import { describe, it, expect } from "vitest";
+import { StringName } from "../../../src/adap-b04/names/StringName";
+import { StringArrayName } from "../../../src/adap-b04/names/StringArrayName";
+import { IllegalArgumentException } from "../../../src/adap-b04/common/IllegalArgumentException";
+import { MethodFailedException } from "../../../src/adap-b04/common/MethodFailedException";
+import { InvalidStateException } from "../../../src/adap-b04/common/InvalidStateException";
+import { Name } from "./Name";
 
 describe("Basic StringName function tests", () => {
   it("test insert", () => {
@@ -134,3 +136,98 @@ describe("Escape character extravaganza", () => {
     expect(n.asString(".")).toBe("oss#cs.fau.de.people");
   });
 });
+
+
+
+
+describe("Test preconditions for StringName", () => {
+  it("invalid index getComponent()", () => {
+    let n = new StringName("fau.de.com");
+    expect(() => n.getComponent(5)).toThrow(IllegalArgumentException);
+    expect(() => n.getComponent(-1)).toThrow(IllegalArgumentException);
+  });
+
+  it("setComponent invalid index", () => {
+    let n = new StringName("fau.de.com");
+    expect(() => n.setComponent(42, "x")).toThrow(IllegalArgumentException);
+  });
+
+  it("setComponent invalid component", () => {
+    let n = new StringName("fau.de.com");
+    expect(() => n.setComponent(1, " ")).toThrow(IllegalArgumentException);
+  });
+
+  it("append invalid component", () => {
+    let n = new StringName("fau.de.com");
+    expect(() => n.append(" ")).toThrow(IllegalArgumentException);
+    expect(() => n.append("")).toThrow(IllegalArgumentException);
+  });
+
+  it("invalid delimiter for asString()", () => {
+    let n = new StringName("fau.de.com");
+    expect(() => n.asString("foo")).toThrow(IllegalArgumentException);
+    expect(() => n.asString("")).toThrow(IllegalArgumentException);
+  });
+});
+
+describe("Preconditions for StringArrayName", () => {
+  it("invalid index getComponent()", () => {
+    let n = new StringArrayName(["fau", "de", "com"]);
+    expect(() => n.getComponent(42)).toThrow(IllegalArgumentException);
+  });
+
+  it("setComponent invalid component", () => {
+    let n = new StringArrayName(["fau", "de", "com"]);
+    expect(() => n.setComponent(0, " ")).toThrow(IllegalArgumentException);
+  });
+
+  it("insert invalid index", () => {
+    let n = new StringArrayName(["fau", "de"]);
+    expect(() => n.insert(10, "com")).toThrow(IllegalArgumentException);
+  });
+
+  it("append invalid component throws", () => {
+    let n = new StringArrayName(["fau"]);
+    expect(() => n.append(" ")).toThrow(IllegalArgumentException);
+  });
+});
+
+describe("Class invariant violations", () => {
+  it("invalid delimiter in letructor should still enforce invariant", () => {
+    let n = new StringName("fau.de.com", "###");
+    expect(() => n.asString()).toThrow(IllegalArgumentException);
+  });
+
+});
+
+describe("Test escaping and masking", () => {
+  it("setComponent rejects unmasked delimiters", () => {
+    let n = new StringName("fau.de.com", ".");
+    expect(() => n.setComponent(1, "x.x")).toThrow(IllegalArgumentException);
+  });
+
+  it("append rejects unmasked escape character", () => {
+    let n = new StringName("fau.de.com");
+    expect(() => n.append("to\\tv")).toThrow(IllegalArgumentException);
+  });
+
+  it("insert rejects unescaped char", () => {
+    let n = new StringArrayName(["foo", "bar"], ".");
+    expect(() => n.insert(1, "bazz.com")).toThrow(IllegalArgumentException);
+  });
+});
+
+describe("Edge cases", () => {
+  it("empty StringArrayName", () => {
+    let n = new StringArrayName([]);
+    expect(n.asString()).toBe("");
+  });
+
+  it("clone", () => {
+    let n = new StringArrayName(["foo", "bar"]);
+    let c = n.clone();
+    expect(c.asString()).toBe("foo.bar");
+    expect(c.getNoComponents()).toBe(2);
+  });
+});
+

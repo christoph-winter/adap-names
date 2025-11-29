@@ -103,7 +103,7 @@ export class StringName extends AbstractName {
     public remove(i: number) {
 
         //precondition
-        IllegalArgumentException.assert(this.isValidIndex(i));
+        IllegalArgumentException.assert(this.isValidIndex(i),"invalid index");
         var prevNoComponents = this.getNoComponents();
 
 
@@ -113,7 +113,7 @@ export class StringName extends AbstractName {
         this.noComponents--;
 
         //postcondition
-        MethodFailedException.assert(this.getNoComponents() == prevNoComponents+1);
+        MethodFailedException.assert(this.getNoComponents() == prevNoComponents-1);
 
         // classInvariant
         this.assertIsValidNameInstanceAsClassInvariant();

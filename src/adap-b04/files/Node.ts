@@ -1,3 +1,4 @@
+import { IllegalArgumentException } from "../common/IllegalArgumentException";
 import { Name } from "../names/Name";
 import { Directory } from "./Directory";
 
@@ -18,6 +19,9 @@ export class Node {
     }
 
     public move(to: Directory): void {
+        IllegalArgumentException.assert(to != undefined);
+        IllegalArgumentException.assert(to.hasChildNode(this), "Directory already contains node");
+        IllegalArgumentException.assert(to.getBaseName().length != 0);
         this.parentNode.removeChildNode(this);
         to.addChildNode(this);
         this.parentNode = to;
@@ -38,6 +42,7 @@ export class Node {
     }
 
     public rename(bn: string): void {
+        IllegalArgumentException.assert(bn.length > 0, "New name must be non-empty")
         this.doSetBaseName(bn);
     }
 

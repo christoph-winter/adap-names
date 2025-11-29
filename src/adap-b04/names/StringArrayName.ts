@@ -20,7 +20,7 @@ export class StringArrayName extends AbstractName {
 
     public getComponent(i: number): string {
         // precondition
-        IllegalArgumentException.assert(this.isValidIndex(i));
+        IllegalArgumentException.assert(this.isValidIndex(i), "Invalid index "+i);
 
         return this.components[i].replaceAll(ESCAPE_CHARACTER, ESCAPE_CHARACTER + ESCAPE_CHARACTER)
             .replaceAll(this.delimiter, ESCAPE_CHARACTER + this.delimiter);
@@ -91,7 +91,7 @@ export class StringArrayName extends AbstractName {
         this.components.splice(i, 1);
 
         //postcondition
-        MethodFailedException.assert(this.getNoComponents() == prevNoComponents+1);
+        MethodFailedException.assert(this.getNoComponents() == prevNoComponents-1);
 
         // classInvariant
         this.assertIsValidNameInstanceAsClassInvariant()
