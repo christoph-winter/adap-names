@@ -1,4 +1,3 @@
-import { stringify } from "querystring";
 import { DEFAULT_DELIMITER, ESCAPE_CHARACTER } from "../common/Printable";
 import { Name } from "./Name";
 import { InvalidStateException } from "../common/InvalidStateException";

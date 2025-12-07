@@ -3,9 +3,10 @@ import { InvalidStateException } from "../common/InvalidStateException";
 
 import { Name } from "../names/Name";
 import { Directory } from "./Directory";
+import { RootNode } from "./RootNode";
 
 export class Node {
-
+    
     protected baseName: string = "";
     protected parentNode: Directory;
 
@@ -41,6 +42,7 @@ export class Node {
     }
 
     public rename(bn: string): void {
+        IllegalArgumentException.assert(bn.length > 0, "New name must be non-empty")
         this.doSetBaseName(bn);
     }
 
@@ -57,7 +59,20 @@ export class Node {
      * @param bn basename of node being searched for
      */
     public findNodes(bn: string): Set<Node> {
-        throw new Error("needs implementation or deletion");
+        IllegalArgumentException.assert(bn.length > 0, "search name must be non-empty")
+        
+        let nodeSet = new Set<Node>();
+        if(this.getBaseName() == bn){
+            nodeSet.add(this);
+        }
+
+        this.assertIsValidNodeInstanceAsClassInvariant();
+        return nodeSet;
+    }
+
+    protected assertIsValidNodeInstanceAsClassInvariant() {
+        InvalidStateException.assert(this.parentNode != undefined);
+        InvalidStateException.assert(this.baseName.length > 0);
     }
 
 }
