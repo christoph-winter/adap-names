@@ -37,12 +37,51 @@ describe("Basic StringName function tests", () => {
     expect(result.asString()).toBe("oss.cs.fau.de.com.tv.to")
     expect(result.getNoComponents()).toBe(7);
   });
-    it("test equality", () => {
+  it("test equality contract - reflexive", () => {
     let n: Name = new StringName("oss.cs.fau.de");
-    let otherN: Name = new StringName("oss.cs.fau.de");
-    expect(n.isEqual(otherN)).toBe(true);
-    expect(n.getHashCode()).toBe(otherN.getHashCode());
+    expect(n.isEqual(n)).toBe(true);
+    expect(n.getHashCode()).toBe(n.getHashCode());
+
+    let n2 = n.setComponent(1, "eit");
+    expect(n2.isEqual(n)).toBe(false);
   });
+  it("test equality contract - symmetric", () => {
+    let n: Name = new StringName("oss.cs.fau.de");
+    let n2: Name = new StringArrayName(["oss","cs","fau","de"]);
+    expect(n.isEqual(n2)).toBe(true);
+    expect(n2.isEqual(n)).toBe(true);
+
+    let n3 = n2.append("com");
+    expect(n.isEqual(n3)).toBe(false);
+    expect(n3.isEqual(n)).toBe(false);
+  });
+      it("test equality contract - transitive", () => {
+    let n1: Name = new StringName("oss.cs.fau.de");
+    let n2: Name = new StringArrayName(["oss","cs","fau","de"]);
+    let n3: Name = new StringName("oss.cs.fau.de",".");
+    expect(n1.isEqual(n2)).toBe(true);
+    expect(n2.isEqual(n3)).toBe(true);
+    expect(n1.isEqual(n3)).toBe(true);
+
+    n3 = n3.setComponent(3, "tv");
+    
+    expect(n1.isEqual(n2)).toBe(true);
+    expect(n2.isEqual(n3)).toBe(false);
+    expect(n1.isEqual(n3)).toBe(false);
+  });
+  it("test equality contract - consistent", () => {
+    let n1: Name = new StringName("oss.cs.fau.de");
+    let n2: Name = new StringName("oss.cs.fau.de",".");
+    expect(n1.isEqual(n2)).toBe(true);
+    expect(n1.isEqual(n2)).toBe(true); 
+    expect(n2.isEqual(n1)).toBe(true);
+    expect(n2.isEqual(n1)).toBe(true);
+  });
+  // it("test equality contract - null object", () => {
+  //   let n1: Name = new StringName("oss.cs.fau.de");
+  //   let n2: Name = new StringName("oss.cs.fau.de",".");
+  //   expect(n1.isEqual(undefined)).toBe(false);
+  // });
 });
 
 describe("Basic StringArrayName function tests", () => {
